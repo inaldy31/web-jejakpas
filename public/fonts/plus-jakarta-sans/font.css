@@ -1,0 +1,12 @@
+/* Plus Jakarta Sans (Gumpita Rahayu, Tokotype), SIL Open Font License 1.1: lihat OFL.txt di folder ini.
+   Berkas: github.com/tokotype/PlusJakartaSans, fonts/webfonts/PlusJakartaSans[wght].woff2 pada commit
+   6d4ffaf7a0c04a1bc2f31be2f1069e84d2433797, diganti nama menjadi PlusJakartaSans-Variable.woff2
+   (sha256 49c62cf1fb70f225ea113361f0134a48858c3a7d0175173aa3e38a0c6c8539d2). Satu berkas variabel untuk bobot 200
+   sampai 800. Dipakai panel Admin (AdminPanelProvider); halaman publik membangun fontnya sendiri lewat Vite. */
+@font-face {
+    font-family: 'Plus Jakarta Sans';
+    font-style: normal;
+    font-weight: 200 800;
+    font-display: swap;
+    src: url('PlusJakartaSans-Variable.woff2') format('woff2');
+}

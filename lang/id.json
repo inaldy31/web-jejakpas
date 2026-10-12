@@ -1,0 +1,15 @@
+{
+    "Pagination Navigation": "Navigasi Halaman",
+    "Showing": "Menampilkan",
+    "to": "sampai",
+    "of": "dari",
+    "results": "hasil",
+    "Go to page :page": "Ke halaman :page",
+    "Not Found": "Halaman Tidak Ditemukan",
+    "Forbidden": "Akses Ditolak",
+    "Unauthorized": "Tidak Berwenang",
+    "Page Expired": "Halaman Kedaluwarsa",
+    "Too Many Requests": "Terlalu Banyak Permintaan",
+    "Server Error": "Terjadi Kesalahan pada Server",
+    "Service Unavailable": "Layanan Sedang Tidak Tersedia"
+}
