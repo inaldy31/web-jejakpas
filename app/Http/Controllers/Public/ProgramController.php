@@ -40,14 +40,14 @@ final class ProgramController
             isset($filters['tahun']) ? (int) $filters['tahun'] : null,
             isset($filters['upt']) ? (int) $filters['upt'] : null,
         );
-        $minGroupSize = (int) config('jejak.privacy.min_group_size');
 
         return view('public.programs.index', [
             'programs' => $programs,
             'filters' => $filters,
-            'summary' => Arr::except($stats->summary(), 'ready'),
-            'recap' => $this->recapRows($stats, $minGroupSize),
-            'minGroupSize' => $minGroupSize,
+            'summary' => Arr::except($stats->publicSummary(), 'ready'),
+            'withheld' => $stats->withholdsResults(),
+            'recap' => $this->recapRows($stats),
+            'minGroupSize' => ImpactStats::minGroupSize(),
             'years' => FilterOptions::years($filters['tahun'] ?? null),
             'upts' => FilterOptions::keepSelected(
                 Upt::whereHas('programs', fn (Builder $q) => $q->published())->orderBy('name')->pluck('name', 'id')->all(),
@@ -65,13 +65,13 @@ final class ProgramController
         ]);
     }
 
-    private function recapRows(ImpactStats $stats, int $minGroupSize): Collection
+    private function recapRows(ImpactStats $stats): Collection
     {
-        return $stats->assessmentRecapByUpt()->map(function (array $row) use ($minGroupSize): array {
-            $hideBreakdown = $row['assessed'] > 0 && $row['assessed'] < $minGroupSize;
+        return $stats->assessmentRecapByUpt()->map(function (array $row): array {
+            $hideBreakdown = ImpactStats::isSmallGroup($row['assessed']);
 
             return [
-                ...($hideBreakdown ? Arr::except($row, ['siap', 'penguatan', 'belum_siap']) : $row),
+                ...($hideBreakdown ? Arr::except($row, ['siap', 'penguatan', 'belum_siap', 'peer_educators']) : $row),
                 'hide_breakdown' => $hideBreakdown,
             ];
         });

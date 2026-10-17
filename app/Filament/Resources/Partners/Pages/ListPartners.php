@@ -32,6 +32,7 @@ class ListPartners extends ListRecords
                         ->directory('imports')
                         ->acceptedFileTypes(['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
                         ->maxSize(config('jejak.upload.max_kb'))
+                        ->preventFilePathTampering()
                         ->required(),
                 ])
                 ->action(function (array $data): void {

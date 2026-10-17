@@ -2,8 +2,14 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Auth\LoggedAppAuthentication;
 use App\Filament\AvatarProviders\LocalAvatarProvider;
+use App\Filament\Pages\Auth\ChangePassword;
+use App\Filament\Pages\Auth\EditProfile;
 use App\Filament\Pages\Auth\Login;
+use App\Http\Middleware\EnsureAccountIsActive;
+use App\Http\Middleware\EnsurePasswordIsChanged;
+use Filament\Auth\MultiFactor\Http\Middleware\EnsureMultiFactorAuthenticationIsEnabled;
 use Filament\FontProviders\LocalFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -13,12 +19,12 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -30,6 +36,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(Login::class)
+            ->profile(EditProfile::class, isSimple: false)
+            ->multiFactorAuthentication([LoggedAppAuthentication::make()->recoverable()->codeWindow(2)], isRequired: true)
             ->strictAuthorization()
             ->brandName(fn (): string => __('jejak.app_name'))
             ->brandLogo(fn () => view('filament.admin.brand-logo'))
@@ -73,7 +81,6 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -87,7 +94,14 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
+                EnsureAccountIsActive::class,
                 Authenticate::class,
-            ]);
+                EnsurePasswordIsChanged::class,
+            ], isPersistent: true)
+            ->persistentMiddleware([EnsureMultiFactorAuthenticationIsEnabled::class])
+            ->authenticatedRoutes(function (): void {
+                Route::get('/ganti-password', ChangePassword::class)->name('auth.password-change');
+            })
+            ->livewireComponents([ChangePassword::class]);
     }
 }

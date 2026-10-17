@@ -8,6 +8,9 @@ use App\Http\Controllers\Public\ImpactController;
 use App\Http\Controllers\Public\KnowledgeController;
 use App\Http\Controllers\Public\PartnerController;
 use App\Http\Controllers\Public\ProgramController;
+use App\Http\Middleware\EnsureAccountIsActive;
+use App\Http\Middleware\EnsurePasswordIsChanged;
+use Filament\Auth\MultiFactor\Http\Middleware\EnsureMultiFactorAuthenticationIsEnabled;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
@@ -28,7 +31,14 @@ Route::view('/kebijakan-privasi', 'public.pages.privacy')->name('privacy');
 Route::view('/syarat-ketentuan', 'public.pages.terms')->name('terms');
 Route::view('/kontak', 'public.pages.contact')->name('contact');
 
-Route::middleware(['auth', 'auth.session', 'cache.headers:no_store;private;max_age=0'])->prefix('admin-berkas')->name('admin-files.')->group(function () {
+Route::middleware([
+    'auth',
+    EnsureAccountIsActive::class,
+    'auth.session',
+    EnsurePasswordIsChanged::class,
+    EnsureMultiFactorAuthenticationIsEnabled::class,
+    'cache.headers:no_store;private;max_age=0',
+])->prefix('admin-berkas')->name('admin-files.')->group(function () {
     Route::get('pks/{pksDocument}', PksDocumentDownloadController::class)
         ->middleware('can:view,pksDocument')
         ->name('pks-document');

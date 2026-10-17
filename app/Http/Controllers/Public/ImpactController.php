@@ -25,28 +25,23 @@ final class ImpactController
             isset($filters['upt']) ? (int) $filters['upt'] : null,
         );
 
-        $summary = $stats->summary();
-        $minGroupSize = (int) config('jejak.privacy.min_group_size');
+        $minGroupSize = ImpactStats::minGroupSize();
 
-        $hideReadiness = $summary['assessed'] !== null && $summary['assessed'] < $minGroupSize;
-
-        if ($hideReadiness) {
-            $summary['ready'] = null;
-        }
+        $withheld = $stats->withholdsResults();
 
         $funnel = array_map(
-            fn (array $stage): array => $hideReadiness && $stage['key'] === 'ready'
+            fn (array $stage): array => $withheld && in_array($stage['key'], ImpactStats::WITHHELD, true)
                 ? [...$stage, 'value' => null, 'hidden' => true]
                 : [...$stage, 'hidden' => false],
             $stats->funnel(),
         );
 
-        $distribution = $hideReadiness ? null : $stats->assessmentDistribution();
+        $distribution = $withheld ? null : $stats->assessmentDistribution();
 
         return view('public.impact', [
             'filters' => $filters,
-            'summary' => $summary,
-            'hideReadiness' => $hideReadiness,
+            'summary' => $stats->publicSummary(),
+            'withheld' => $withheld,
             'minGroupSize' => $minGroupSize,
             'funnel' => $funnel,
             'funnelChart' => collect($funnel)->contains(fn (array $stage): bool => $stage['value'] !== null) ? ImpactCharts::funnel($funnel) : null,

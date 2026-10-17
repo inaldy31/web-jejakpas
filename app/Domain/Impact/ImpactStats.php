@@ -19,11 +19,16 @@ use App\Models\Program;
 use App\Models\Upt;
 use BackedEnum;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 final class ImpactStats
 {
     private const FUNNEL = ['participants', 'certified', 'assessed', 'ready', 'peer_educators', 'beneficiaries'];
+
+    public const WITHHELD = ['ready', 'peer_educators'];
+
+    private ?bool $withholdsResults = null;
 
     private ?array $summary = null;
 
@@ -39,6 +44,30 @@ final class ImpactStats
     public function summary(): array
     {
         return $this->summary ??= $this->buildSummary();
+    }
+
+    public static function minGroupSize(): int
+    {
+        return (int) config('jejak.privacy.min_group_size');
+    }
+
+    public static function isSmallGroup(int $assessed): bool
+    {
+        return $assessed > 0 && $assessed < self::minGroupSize();
+    }
+
+    public function withholdsResults(): bool
+    {
+        return $this->withholdsResults ??= $this->assessedCandidates()->toBase()
+            ->groupBy('upt_id')
+            ->selectRaw('count(*) as assessed')
+            ->pluck('assessed')
+            ->contains(fn (int|string $assessed): bool => self::isSmallGroup((int) $assessed));
+    }
+
+    public function publicSummary(): array
+    {
+        return $this->withholdsResults() ? Arr::except($this->summary(), self::WITHHELD) : $this->summary();
     }
 
     private function buildSummary(): array

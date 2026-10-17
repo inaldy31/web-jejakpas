@@ -2,7 +2,8 @@
     use App\Support\HeroPhotos;
     use App\Support\StatIcons;
 
-    $statCards = ['pilot_upts', 'programs', 'participants', 'certified', 'peer_educators', 'partners'];
+    $statCards = collect(['pilot_upts', 'programs', 'participants', 'certified', 'peer_educators', 'partners'])
+        ->filter(fn (string $key): bool => array_key_exists($key, $summary));
     $journeyIcons = [
         'heroicon-o-wrench-screwdriver',
         'heroicon-o-check-badge',
@@ -38,11 +39,14 @@
     </x-page-hero>
 
     <section class="relative z-10 mx-auto -mt-12 max-w-7xl px-4">
-        <div class="grid grid-cols-2 gap-2 rounded-2xl bg-white p-3 shadow-lift ring-1 ring-slate-900/5 md:grid-cols-3 lg:grid-cols-6">
+        <div @class(['grid grid-cols-2 gap-2 rounded-2xl bg-white p-3 shadow-lift ring-1 ring-slate-900/5', $statCards->count() === 6 ? 'md:grid-cols-3 lg:grid-cols-6' : 'md:grid-cols-5'])>
             @foreach ($statCards as $key)
-                <x-stat-card :label="__('jejak.stats.'.$key)" :value="$summary[$key]" :icon="StatIcons::for($key)" />
+                <x-stat-card :label="__('jejak.stats.'.$key)" :value="$summary[$key]" :icon="StatIcons::for($key)" :class="$loop->last && $statCards->count() % 2 === 1 ? 'col-span-2 md:col-span-1' : ''" />
             @endforeach
         </div>
+        @if ($withheld)
+            <x-privacy-note class="mt-3">{{ __('jejak.public.peer_educators_withheld', ['count' => $minGroupSize]) }}</x-privacy-note>
+        @endif
         <div class="mt-3 flex justify-end">
             <a href="{{ route('impact') }}" class="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-semibold text-navy-900 transition-colors duration-200 hover:text-navy-700">
                 {{ __('jejak.home.cta_impact') }}

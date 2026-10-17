@@ -20,10 +20,11 @@ class ActivityResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClock;
 
     private const EVENTS = [
-        'login', 'logout', 'login_failed',
+        'login', 'logout', 'login_failed', 'two_factor_failed', 'two_factor_unreadable',
         'created', 'updated', 'deleted', 'restored',
         'published', 'unpublished',
         'downloaded', 'profile_printed', 'deactivated', 'reactivated', 'upts_updated',
+        'password_changed', 'two_factor_enabled', 'two_factor_disabled', 'two_factor_reset', 'password_reset', 'primary_admin_assigned',
     ];
 
     private const SUBJECT_LABEL_KEYS = [
@@ -35,6 +36,7 @@ class ActivityResource extends Resource
         'PeerCandidate' => 'jejak.candidates.model_label',
         'Assessment' => 'jejak.assessments.model_label',
         'KnowledgeItem' => 'jejak.knowledge.model_label',
+        'User' => 'jejak.admins.model_label',
     ];
 
     public static function getNavigationGroup(): string|UnitEnum|null
@@ -59,7 +61,7 @@ class ActivityResource extends Resource
             ->columns([
                 TextColumn::make('created_at')->label(__('jejak.activities.columns.created_at'))->dateTime('d M Y H:i')->sortable(),
                 TextColumn::make('causer.name')->label(__('jejak.activities.columns.causer'))
-                    ->placeholder(fn (Activity $record): string => $record->event === 'login_failed' ? __('jejak.activities.unknown_causer') : __('jejak.activities.system_placeholder')),
+                    ->placeholder(fn (Activity $record): string => in_array($record->event, ['login_failed', 'two_factor_failed', 'two_factor_unreadable'], true) ? __('jejak.activities.unknown_causer') : __('jejak.activities.system_placeholder')),
                 TextColumn::make('event')->label(__('jejak.activities.columns.event'))->badge()
                     ->formatStateUsing(fn (string $state): string => static::eventLabels()[$state] ?? $state),
                 TextColumn::make('subject_type')->label(__('jejak.activities.columns.subject_type'))->placeholder(__('jejak.activities.unknown_subject'))

@@ -1,15 +1,16 @@
-@props(['status'])
+@props(['status', 'texts' => null])
 
 @php
+    $texts = 'jejak.errors.'.($texts ?? $status);
     $admin = request()->is('admin', 'admin/*', 'admin-berkas/*');
     $primary = 'inline-flex h-11 items-center rounded-full bg-navy-900 px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-navy-800';
     $secondary = 'inline-flex h-11 items-center rounded-full px-4 text-sm font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-navy-900';
 @endphp
 
-<x-layouts.public :title="__('jejak.errors.'.$status.'.title')">
+<x-layouts.public :title="__($texts.'.title')">
     <x-page-hero :eyebrow="__('jejak.errors.eyebrow', ['status' => $status])">
-        <x-slot:title>{{ __('jejak.errors.'.$status.'.title') }}</x-slot:title>
-        <x-slot:lead>{{ __('jejak.errors.'.$status.'.message') }}</x-slot:lead>
+        <x-slot:title>{{ __($texts.'.title') }}</x-slot:title>
+        <x-slot:lead>{{ __($texts.'.message') }}</x-slot:lead>
     </x-page-hero>
 
     <div class="mx-auto mt-10 max-w-7xl px-4">

@@ -53,9 +53,11 @@ final class PublicationActions
             ->label(__('jejak.publication.publish_selected.label'))
             ->icon(Heroicon::OutlinedGlobeAlt)
             ->requiresConfirmation()
-            ->modalDescription(__('jejak.publication.publish_selected.modal_description'))
+            ->modalDescription(fn (BulkAction $action): string => __('jejak.publication.publish_selected.modal_description', [
+                'label' => $action->getModelLabel(),
+            ]))
             ->authorizeIndividualRecords('update')
-            ->action(function (Collection $records): void {
+            ->action(function (BulkAction $action, Collection $records): void {
                 $skipped = [];
 
                 foreach ($records as $record) {
@@ -75,8 +77,9 @@ final class PublicationActions
                 }
 
                 Notification::make()
-                    ->title(__('jejak.publication.publish_selected.skipped_title'))
+                    ->title(__('jejak.publication.publish_selected.skipped_title', ['label' => $action->getModelLabel()]))
                     ->body(__('jejak.publication.publish_selected.skipped_body', [
+                        'label' => $action->getModelLabel(),
                         'count' => count($skipped),
                         'items' => implode(', ', array_map(fn (Model $record): string => (string) ($record->code ?? $record->getKey()), $skipped)),
                     ]))

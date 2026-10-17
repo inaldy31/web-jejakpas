@@ -4,7 +4,8 @@
     use App\Support\StatIcons;
 
     $cards = collect(['pilot_upts', 'partners', 'programs', 'participants', 'certified', 'assessed', 'ready', 'peer_educators', 'beneficiaries'])
-        ->reject(fn (string $key): bool => $hideReadiness && $key === 'ready');
+        ->filter(fn (string $key): bool => array_key_exists($key, $summary));
+    $cardColumns = $cards->count() === 9 ? 'md:grid-cols-3 xl:grid-cols-5' : 'md:grid-cols-4';
 
     $filterFields = [
         ['name' => 'tahun', 'label' => __('jejak.programs.year'), 'options' => $years],
@@ -25,16 +26,13 @@
 
     <section class="relative z-10 mx-auto -mt-6 max-w-7xl px-4">
         <h2 id="hasil" class="sr-only">{{ __('jejak.public_impact.summary_title') }}</h2>
-        <div class="grid grid-cols-2 gap-2 rounded-2xl bg-white p-3 shadow-lift ring-1 ring-slate-900/5 md:grid-cols-3 xl:grid-cols-5">
+        <div @class(['grid grid-cols-2 gap-2 rounded-2xl bg-white p-3 shadow-lift ring-1 ring-slate-900/5', $cardColumns])>
             @foreach ($cards as $key)
                 <x-stat-card :label="__('jejak.stats.'.$key)" :value="$summary[$key]" :icon="StatIcons::for($key)" :class="$loop->last && $cards->count() % 2 === 1 ? 'col-span-2 md:col-span-1' : ''" />
             @endforeach
         </div>
-        @if ($hideReadiness)
-            <p class="mt-3 flex items-start gap-2 text-sm text-slate-600">
-                <x-heroicon-o-lock-closed class="mt-0.5 h-5 w-5 shrink-0 text-slate-500" aria-hidden="true" />
-                {{ __('jejak.public_impact.privacy_note', ['count' => $minGroupSize]) }}
-            </p>
+        @if ($withheld)
+            <x-privacy-note class="mt-3">{{ __('jejak.public_impact.privacy_note', ['count' => $minGroupSize]) }}</x-privacy-note>
         @endif
     </section>
 
@@ -133,11 +131,8 @@
                 @else
                     <x-empty-state class="mt-4" icon="heroicon-o-arrow-trending-up" :title="__('jejak.not_available')" />
                 @endif
-                @if ($hideReadiness)
-                    <p class="mt-3 flex items-start gap-2 text-sm text-slate-600">
-                        <x-heroicon-o-lock-closed class="mt-0.5 h-5 w-5 shrink-0 text-slate-500" aria-hidden="true" />
-                        {{ __('jejak.public_impact.privacy_note', ['count' => $minGroupSize]) }}
-                    </p>
+                @if ($withheld)
+                    <x-privacy-note class="mt-3">{{ __('jejak.public_impact.privacy_note', ['count' => $minGroupSize]) }}</x-privacy-note>
                 @endif
                 <x-data-table class="mt-4" :scroll="false" :caption="__('jejak.public_impact.funnel_title')">
                     <thead class="sr-only">
@@ -170,7 +165,7 @@
                     <x-heroicon-o-clipboard-document-check class="h-5 w-5 shrink-0 text-gold-700" aria-hidden="true" />
                     {{ __('jejak.public_impact.distribution_title') }}
                 </h2>
-                @if ($hideReadiness)
+                @if ($withheld)
                     <x-empty-state class="mt-4" icon="heroicon-o-lock-closed" :title="__('jejak.public_impact.hidden')">
                         {{ __('jejak.public_impact.distribution_hidden', ['count' => $minGroupSize]) }}
                     </x-empty-state>

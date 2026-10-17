@@ -4,6 +4,13 @@ return [
     'admin' => [
         'username' => env('ADMIN_USERNAME', 'admin'),
         'password' => env('ADMIN_PASSWORD'),
+        'name' => env('ADMIN_NAME'),
+    ],
+
+    'security' => [
+        'csp_report_only' => filter_var(env('CSP_REPORT_ONLY', false), FILTER_VALIDATE_BOOLEAN),
+
+        'trusted_device_days' => 14,
     ],
 
     'upload' => [
@@ -100,5 +107,17 @@ return [
         ['file' => 'images/hero/dampak-3-sertifikat.jpg', 'caption' => 'Ilustrasi tangan memegang sertifikat pelatihan', 'source' => 'Canva'],
         ['file' => 'images/hero/dampak-4-belajar-bersama.jpg', 'caption' => 'Ilustrasi dua pasang tangan belajar menjahit bersama', 'source' => 'Canva'],
         ['file' => 'images/hero/dampak-5-tata-rias.jpg', 'caption' => 'Ilustrasi praktik tata rias dengan palet dan kuas', 'source' => 'Canva'],
+    ],
+
+    'partner_hero_photos' => [
+        ['file' => 'images/hero/mitra-1-kesepakatan.jpg', 'caption' => 'Ilustrasi jabat tangan kesepakatan kerja sama dengan mitra', 'source' => 'Canva'],
+        ['file' => 'images/hero/mitra-2-instruktur-mitra.jpg', 'caption' => 'Ilustrasi instruktur dari mitra mengajar di kelas pelatihan', 'source' => 'Canva'],
+        ['file' => 'images/hero/mitra-3-pengemasan-produk.jpg', 'caption' => 'Ilustrasi pengemasan hasil karya untuk dipasarkan bersama mitra', 'source' => 'Canva'],
+    ],
+
+    'program_hero_photos' => [
+        ['file' => 'images/hero/program-1-hidroponik.jpg', 'caption' => 'Ilustrasi pelatihan bertanam sayur hidroponik', 'source' => 'Canva'],
+        ['file' => 'images/hero/program-2-barista.jpg', 'caption' => 'Ilustrasi pelatihan barista menyeduh kopi', 'source' => 'Canva'],
+        ['file' => 'images/hero/program-3-ecoprint.jpg', 'caption' => 'Ilustrasi pelatihan ecoprint dengan daun pada kain', 'source' => 'Canva'],
     ],
 ];

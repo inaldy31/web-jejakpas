@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Support\TrustedDevices;
 use Closure;
 use DateTime;
 use Filament\Forms\Components\DatePicker;
@@ -14,6 +15,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::defaultView('pagination.jejak');
+
+        Password::defaults(fn (): Password => Password::min(8));
 
         RateLimiter::for('knowledge-download', fn (Request $request): Limit => Limit::perMinute(30)->by($request->ip()));
 
@@ -46,7 +50,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Event::listen(Login::class, function (Login $event): void {
-            activity('auth')->causedBy($event->user)->event('login')->log('login');
+            activity('auth')->causedBy($event->user)->event('login')
+                ->withProperties(TrustedDevices::wasUsed(request()) ? ['trusted_device' => true] : [])
+                ->log('login');
         });
 
         Event::listen(Logout::class, function (Logout $event): void {

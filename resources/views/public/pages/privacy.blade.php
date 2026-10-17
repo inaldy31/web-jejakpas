@@ -10,6 +10,8 @@
         <p>{{ __('jejak.pages.privacy.threshold', ['count' => (int) config('jejak.privacy.min_group_size')]) }}</p>
         <h2 class="pt-2 text-xl font-bold text-navy-900">{{ __('jejak.pages.privacy.managed_title') }}</h2>
         <p>{{ __('jejak.pages.privacy.managed_body') }}</p>
+        <h2 class="pt-2 text-xl font-bold text-navy-900">{{ __('jejak.pages.privacy.cookies_title') }}</h2>
+        <p>{{ __('jejak.pages.privacy.cookies_body', ['minutes' => (int) config('session.lifetime')]) }}</p>
         <h2 class="pt-2 text-xl font-bold text-navy-900">{{ __('jejak.footer.contact') }}</h2>
         <p>{{ __('jejak.pages.privacy.contact_before') }} <a href="{{ route('contact') }}" class="font-medium text-navy-700 underline underline-offset-2 hover:text-navy-900">{{ __('jejak.footer.contact') }}</a>.</p>
     </article>

@@ -27,6 +27,8 @@ return [
         'login' => 'Masuk',
         'logout' => 'Keluar',
         'login_failed' => 'Gagal masuk',
+        'two_factor_failed' => 'Kode 2FA salah',
+        'two_factor_unreadable' => '2FA tidak terbaca',
         'created' => 'Dibuat',
         'updated' => 'Diperbarui',
         'deleted' => 'Dihapus',
@@ -38,6 +40,12 @@ return [
         'deactivated' => 'Dinonaktifkan',
         'reactivated' => 'Diaktifkan kembali',
         'upts_updated' => 'UPT mitra diperbarui',
+        'password_changed' => 'Kata sandi diganti',
+        'two_factor_enabled' => '2FA dipasang',
+        'two_factor_disabled' => '2FA dihapus',
+        'two_factor_reset' => '2FA direset',
+        'password_reset' => 'Kata sandi direset',
+        'primary_admin_assigned' => 'Ditunjuk Admin Utama',
     ],
 
     'activity_categories' => [
@@ -46,6 +54,7 @@ return [
         'peer_educator' => 'Peer Educator',
         'partners' => 'Mitra',
         'publication' => 'Publikasi',
+        'admin_accounts' => 'Akun Admin',
         'default' => 'Umum',
     ],
 
@@ -120,6 +129,10 @@ return [
             'title' => 'Layanan Sedang Tidak Tersedia',
             'message' => 'JEJAK PAS sedang dalam pemeliharaan. Silakan coba beberapa saat lagi.',
         ],
+        '4xx' => [
+            'title' => 'Permintaan Tidak Dapat Diproses',
+            'message' => 'Permintaan ke halaman ini tidak dapat diproses. Periksa kembali alamat yang dibuka, lalu coba lagi.',
+        ],
     ],
 
     'home' => [
@@ -144,6 +157,8 @@ return [
     'hero_photos' => [
         'home_label' => 'Ilustrasi kegiatan pembinaan',
         'impact_label' => 'Ilustrasi hasil dan dampak pembinaan',
+        'partners_label' => 'Ilustrasi kolaborasi bersama mitra',
+        'programs_label' => 'Ilustrasi program pelatihan',
         'roledescription' => 'tayangan foto',
         'show' => 'Tampilkan gambar :number: :caption',
         'pause' => 'Jeda tayangan',
@@ -153,6 +168,86 @@ return [
     'auth' => [
         'username' => 'Nama pengguna',
         'failed' => 'Nama pengguna atau kata sandi salah.',
+        'two_factor_unreadable' => '2FA akun ini perlu dipasang ulang karena server tidak dapat membacanya. Minta pemegang server menjalankan reset 2FA untuk akun Anda, lalu masuk lagi untuk memasang 2FA.',
+    ],
+
+    'admins' => [
+        'navigation_label' => 'Kelola Admin',
+        'model_label' => 'Admin',
+        'fields' => [
+            'name' => 'Nama',
+            'username_help' => 'Huruf kecil, angka, titik, garis bawah, atau tanda hubung. Tidak bisa diubah sesudah disimpan.',
+            'username_format' => 'Nama pengguna hanya boleh berisi huruf kecil, angka, titik (.), garis bawah (_), atau tanda hubung (-).',
+        ],
+        'columns' => [
+            'status' => 'Status',
+            'two_factor' => '2FA',
+            'role' => 'Peran',
+        ],
+        'status' => [
+            'active' => 'Aktif',
+            'deactivated' => 'Nonaktif',
+        ],
+        'two_factor' => [
+            'enabled' => 'Terpasang',
+            'disabled' => 'Belum',
+        ],
+        'roles' => [
+            'primary' => 'Admin Utama',
+            'admin' => 'Admin',
+        ],
+        'actions' => [
+            'deactivate' => [
+                'label' => 'Nonaktifkan',
+                'description' => 'Admin ini tidak bisa masuk lagi dan sesinya yang sedang berjalan ikut berakhir. Namanya tetap ada di log aktivitas. Bisa diaktifkan lagi kapan saja.',
+                'success' => 'Akun :username dinonaktifkan',
+            ],
+            'reactivate' => [
+                'label' => 'Aktifkan lagi',
+                'success' => 'Akun :username diaktifkan lagi',
+            ],
+            'reset_two_factor' => [
+                'label' => 'Reset 2FA',
+                'description' => 'Pemasangan aplikasi authenticator, kode pemulihan, dan perangkat yang diingat milik Admin ini dihapus. Admin ini wajib memasang 2FA lagi saat masuk berikutnya. Bila akun ini diduga disusupi, lakukan juga Reset kata sandi (sesi yang sedang berjalan ikut berakhir).',
+                'success' => '2FA milik :username sudah direset',
+            ],
+            'reset_password' => [
+                'label' => 'Reset kata sandi',
+                'description' => 'Kata sandi sementara baru dibuat dan ditampilkan sekali. Admin ini wajib menggantinya saat masuk berikutnya, dan sesinya yang sedang berjalan berakhir.',
+            ],
+        ],
+        'temporary_password' => [
+            'heading' => 'Kata sandi sementara untuk :username',
+            'description' => 'Kata sandi ini hanya ditampilkan sekali dan tidak disimpan. Salin lalu berikan langsung kepada Admin yang bersangkutan; Admin itu wajib menggantinya saat pertama masuk.',
+            'label' => 'Kata sandi sementara',
+            'copied' => 'Kata sandi disalin',
+            'done' => 'Selesai',
+        ],
+        'console' => [
+            'via' => 'perintah server',
+            'not_found' => 'Admin dengan nama pengguna ":username" tidak ditemukan.',
+            'deactivated' => 'Akun ":username" nonaktif. Aktifkan dulu lewat Kelola Admin sebelum ditunjuk sebagai Admin Utama.',
+            'two_factor_reset' => '2FA milik ":username" sudah direset. Admin ini wajib memasang 2FA lagi saat masuk berikutnya.',
+            'primary_assigned' => '":username" sekarang Admin Utama. Admin Utama sebelumnya menjadi Admin biasa.',
+            'primary_assigned_without_previous' => '":username" sekarang Admin Utama. Sebelumnya belum ada Admin Utama.',
+            'two_factor_unchanged' => '":username" memang belum memasang 2FA. Tidak ada yang berubah.',
+            'primary_unchanged' => '":username" sudah Admin Utama. Tidak ada yang berubah.',
+            'primary_now' => 'Admin Utama sekarang: :username',
+        ],
+    ],
+
+    'account' => [
+        'password_same' => 'Kata sandi baru tidak boleh sama dengan kata sandi sekarang.',
+        'remember_device' => 'Ingat perangkat ini selama :days hari',
+        'change_password' => [
+            'heading' => 'Ganti kata sandi',
+            'subheading' => 'Anda masuk dengan kata sandi sementara. Buat kata sandi baru (minimal 8 karakter) sebelum melanjutkan.',
+            'current' => 'Kata sandi sementara',
+            'new' => 'Kata sandi baru',
+            'confirmation' => 'Ulangi kata sandi baru',
+            'submit' => 'Simpan kata sandi baru',
+        ],
+        'remember_device_help' => 'Jangan dicentang di komputer bersama atau warnet. Di perangkat ini kode tidak diminta lagi sampai :days hari, kecuali kata sandi atau 2FA diganti.',
     ],
 
     'footer' => [
@@ -270,6 +365,7 @@ return [
 
     'public' => [
         'pilot_empty' => 'Belum ada UPT pilot.',
+        'peer_educators_withheld' => 'Untuk melindungi privasi, angka Peer Educator tidak ditampilkan karena angka di halaman ini mencakup UPT yang baru mengasesmen kurang dari :count Warga Binaan.',
         'filter' => [
             'heading' => 'Filter',
             'all' => 'Semua',
@@ -327,8 +423,8 @@ return [
         'recap_title' => 'Rekap Asesmen Kesiapan per UPT',
         'recap_intro' => 'Hanya angka agregat dari asesmen final. Data individual Warga Binaan tidak ditampilkan.',
         'recap_not_pilot' => 'Rekap asesmen hanya tersedia untuk UPT pilot.',
-        'recap_hidden' => 'Rincian tidak ditampilkan (diasesmen kurang dari :count orang)',
-        'recap_note' => 'Rincian hasil asesmen tidak ditampilkan bila Warga Binaan yang diasesmen di UPT tersebut kurang dari :count orang, untuk melindungi privasi.',
+        'recap_hidden' => 'Rincian dan Peer Educator Aktif tidak ditampilkan (diasesmen kurang dari :count orang)',
+        'recap_note' => 'Untuk melindungi privasi, rincian hasil asesmen dan jumlah Peer Educator Aktif tidak ditampilkan untuk UPT yang baru mengasesmen kurang dari :count Warga Binaan.',
         'recap_year_note' => 'Kolom Peer Educator Aktif menunjukkan status saat ini.',
     ],
 
@@ -339,7 +435,7 @@ return [
         'summary_title' => 'Angka Ringkasan',
         'filter_all_upts' => 'Semua UPT pilot',
         'filter_note' => 'Filter Tahun berlaku untuk program dan asesmen. Perbandingan sebelum dan sesudah, data mitra, dan Penerima Manfaat Lanjutan tidak mengikuti filter Tahun.',
-        'privacy_note' => 'Angka Siap / Peer Educator dan rincian hasil asesmen tidak ditampilkan bila Warga Binaan yang diasesmen kurang dari :count orang, untuk melindungi privasi.',
+        'privacy_note' => 'Untuk melindungi privasi, angka Siap / Peer Educator, Peer Educator, dan distribusi hasil asesmen tidak ditampilkan karena angka di halaman ini mencakup UPT yang baru mengasesmen kurang dari :count Warga Binaan.',
         'before_after_title' => 'Perbandingan Sebelum & Sesudah Implementasi',
         'before_after_chart' => 'Perbandingan sebelum dan sesudah implementasi: :upt',
         'baseline_missing' => 'Data sebelum implementasi belum tersedia.',
@@ -359,7 +455,7 @@ return [
         'distribution_title' => 'Distribusi Hasil Asesmen',
         'distribution_chart' => 'Distribusi hasil asesmen: :name',
         'distribution_empty' => 'Belum ada asesmen final.',
-        'distribution_hidden' => 'Distribusi hasil asesmen tidak ditampilkan bila Warga Binaan yang diasesmen kurang dari :count orang, untuk melindungi privasi.',
+        'distribution_hidden' => 'Untuk melindungi privasi, distribusi hasil asesmen tidak ditampilkan karena angka di halaman ini mencakup UPT yang baru mengasesmen kurang dari :count Warga Binaan.',
         'group_title' => 'Sebaran Mitra per Kelompok',
         'competency_title' => 'Sebaran Program per Bidang Kompetensi',
         'pks_title' => 'Status PKS Mitra',
@@ -504,9 +600,9 @@ return [
         ],
         'publish_selected' => [
             'label' => 'Publish terpilih',
-            'modal_description' => 'Data yang dipilih akan tampil di halaman publik. Mitra yang kolom wajibnya belum lengkap akan dilewati.',
-            'skipped_title' => 'Sebagian mitra dilewati',
-            'skipped_body' => ':count mitra dilewati karena kolom wajib belum lengkap: :items.',
+            'modal_description' => 'Data yang dipilih akan tampil di halaman publik. :label yang kolom wajibnya belum lengkap akan dilewati.',
+            'skipped_title' => 'Sebagian :label dilewati',
+            'skipped_body' => ':count :label dilewati karena kolom wajib belum lengkap: :items.',
         ],
     ],
 
@@ -728,10 +824,12 @@ return [
         'privacy' => [
             'intro' => 'JEJAK PAS dikelola oleh :unit. Pengelolaan data pada JEJAK PAS tunduk pada Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi.',
             'displayed_title' => 'Data yang Ditampilkan',
-            'displayed_body' => 'Halaman publik menampilkan informasi kelembagaan mitra, data program pelatihan, dan angka agregat yang telah diperiksa dan dipublikasikan. Data pribadi Warga Binaan, termasuk hasil asesmen individual, tidak ditampilkan kepada publik.',
-            'threshold' => 'Rekap kesiapan dan rincian hasil asesmen tidak ditampilkan bila kelompok Warga Binaan yang diasesmen kurang dari :count orang.',
+            'displayed_body' => 'Halaman publik menampilkan informasi kelembagaan mitra, data program pelatihan, dan data pemantauan yang telah dipublikasikan Admin, serta angka agregat yang dihitung otomatis dari data itu dan langsung dari asesmen yang sudah final. Data pribadi Warga Binaan, termasuk hasil asesmen individual, tidak ditampilkan kepada publik.',
+            'threshold' => 'Bila sebuah UPT baru mengasesmen kurang dari :count Warga Binaan, hasil asesmen kelompok itu tidak ditampilkan: rincian kesiapan dan jumlah Peer Educator Aktif UPT itu ditahan, begitu pula angka Siap / Peer Educator, Peer Educator, dan distribusi hasil asesmen pada setiap ringkasan yang mencakup UPT itu. Jumlah Warga Binaan yang diasesmen tetap ditampilkan.',
             'managed_title' => 'Data yang Dikelola Admin',
             'managed_body' => 'Data asesmen dicatat menggunakan inisial dan kode, disimpan pada sistem dengan akses terbatas, serta digunakan hanya untuk pembinaan dan penetapan Peer Educator sesuai SOP.',
+            'cookies_title' => 'Cookie dan Data Teknis',
+            'cookies_body' => 'Halaman publik JEJAK PAS memakai dua cookie teknis, yaitu cookie sesi dan cookie XSRF-TOKEN, agar situs berjalan aman. Untuk keamanan, server juga mencatat sementara alamat IP dan jenis peramban pengunjung; catatan itu kedaluwarsa sesudah :minutes menit tanpa aktivitas, lalu dihapus berkala.',
             'contact_before' => 'Pertanyaan mengenai data dapat disampaikan melalui halaman',
         ],
         'terms' => [

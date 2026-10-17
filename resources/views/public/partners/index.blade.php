@@ -1,4 +1,6 @@
 @php
+    use App\Support\HeroPhotos;
+
     $filterFields = [
         ['name' => 'kelompok', 'label' => __('jejak.partners.group'), 'options' => $groups],
         ['name' => 'status_pks', 'label' => __('jejak.partners.pks_status'), 'options' => $pksStatuses],
@@ -6,10 +8,12 @@
         ['name' => 'upt', 'label' => __('jejak.upts.model_label'), 'options' => $upts],
         ['name' => 'wilayah', 'label' => __('jejak.public_partners.filter_wilayah'), 'options' => $provinces],
     ];
+
+    $heroPhotos = HeroPhotos::available('jejak.partner_hero_photos');
 @endphp
 
 <x-layouts.public :title="__('jejak.nav.partners')">
-    <x-page-hero :eyebrow="__('jejak.nav.partners')">
+    <x-page-hero :eyebrow="__('jejak.nav.partners')" :photos="$heroPhotos" :photos-label="__('jejak.hero_photos.partners_label')">
         <x-slot:title>
             {{ __('jejak.public_partners.hero_title_before') }}
             <span class="text-gold-400">{{ __('jejak.public_partners.hero_title_highlight') }}</span>
