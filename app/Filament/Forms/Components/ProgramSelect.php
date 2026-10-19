@@ -4,6 +4,7 @@ namespace App\Filament\Forms\Components;
 
 use App\Filament\Forms\Components\Concerns\GuardsArchivedOptions;
 use App\Models\Program;
+use App\Support\UptAccess;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,7 +26,7 @@ class ProgramSelect
 
     private static function scope(Get $get): Builder
     {
-        $query = Program::query()->with('upt')->orderByDesc('year')->orderBy('name');
+        $query = UptAccess::restrict(Program::query()->with('upt')->orderByDesc('year')->orderBy('name'));
 
         return blank($get('upt_id')) ? $query->whereRaw('1 = 0') : $query->where('upt_id', $get('upt_id'));
     }

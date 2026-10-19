@@ -21,4 +21,9 @@ class EditPartner extends EditRecord
     {
         return [...$data, ...$this->getRecord()->only(['contact', 'contact_position'])];
     }
+
+    protected function afterSave(): void
+    {
+        $this->data['upts'] = $this->getRecord()->upts()->pluck('upts.id')->map(fn ($id): string => (string) $id)->all();
+    }
 }

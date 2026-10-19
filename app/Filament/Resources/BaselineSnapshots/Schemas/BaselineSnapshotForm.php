@@ -6,6 +6,7 @@ use App\Enums\SnapshotPhase;
 use App\Models\BaselineSnapshot;
 use App\Models\Partner;
 use App\Support\FormLimits;
+use App\Support\UptAccess;
 use Closure;
 use DateTime;
 use Filament\Forms\Components\DatePicker;
@@ -24,7 +25,8 @@ class BaselineSnapshotForm
     {
         return $schema->components([
             Section::make(__('jejak.snapshots.sections.period'))->columns(2)->schema([
-                Select::make('upt_id')->label(__('jejak.snapshots.upt'))->relationship('upt', 'name')->preload()->required(),
+                Select::make('upt_id')->label(__('jejak.snapshots.upt'))->relationship('upt', 'name')->preload()->required()
+                    ->default(fn () => UptAccess::userUptId())->disabled(fn () => UptAccess::userUptId() !== null)->dehydrated(),
                 ToggleButtons::make('phase')->label(__('jejak.snapshots.phase'))->options(SnapshotPhase::class)->inline()->required(),
                 TextInput::make('period_label')->label(__('jejak.snapshots.period_label'))->required()->maxLength(60)
                     ->helperText(__('jejak.snapshots.period_label_helper')),
@@ -67,13 +69,15 @@ class BaselineSnapshotForm
             $phase = $get('phase');
             $phase = $phase instanceof SnapshotPhase ? $phase : SnapshotPhase::tryFrom((string) $phase);
 
-            if ($phase !== SnapshotPhase::Post || blank($get('upt_id'))) {
+            $uptId = UptAccess::userUptId() ?? $get('upt_id');
+
+            if ($phase !== SnapshotPhase::Post || blank($uptId)) {
                 return;
             }
 
             if ($record !== null
                 && $record->phase === $phase
-                && (string) $record->upt_id === (string) $get('upt_id')
+                && (string) $record->upt_id === (string) $uptId
                 && $record->recorded_at?->toDateString() === $value) {
                 return;
             }
@@ -85,7 +89,7 @@ class BaselineSnapshotForm
             }
 
             $baseline = BaselineSnapshot::query()
-                ->where('upt_id', $get('upt_id'))
+                ->where('upt_id', $uptId)
                 ->where('phase', SnapshotPhase::Baseline->value)
                 ->orderByDesc('recorded_at')
                 ->first();

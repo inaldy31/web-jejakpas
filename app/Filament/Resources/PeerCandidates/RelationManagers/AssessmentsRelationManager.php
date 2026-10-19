@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PeerCandidates\RelationManagers;
 
 use App\Filament\Resources\Assessments\AssessmentResource;
+use App\Filament\Resources\PeerCandidates\PeerCandidateResource;
 use App\Models\Assessment;
 use Filament\Actions\Action;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -17,6 +18,11 @@ class AssessmentsRelationManager extends RelationManager
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
         return __('jejak.candidates.assessments.title');
+    }
+
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+        return parent::canViewForRecord($ownerRecord, $pageClass) && PeerCandidateResource::canEdit($ownerRecord);
     }
 
     public function table(Table $table): Table

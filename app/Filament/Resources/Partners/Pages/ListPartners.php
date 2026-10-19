@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Partners\Pages;
 use App\Domain\Partners\ImportException;
 use App\Domain\Partners\PartnerExcelImporter;
 use App\Filament\Resources\Partners\PartnerResource;
+use App\Support\UptAccess;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\FileUpload;
@@ -39,7 +40,7 @@ class ListPartners extends ListRecords
                     $disk = Storage::disk('local');
 
                     try {
-                        $result = app(PartnerExcelImporter::class)->import($disk->path($data['file']));
+                        $result = app(PartnerExcelImporter::class)->import($disk->path($data['file']), UptAccess::userUptId());
                     } catch (ImportException $e) {
                         Notification::make()->title(__('jejak.partners.import.failed_title'))->body($e->getMessage())->danger()->send();
 

@@ -41,9 +41,9 @@ class BaselineSnapshotsTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     PublicationActions::bulkPublish(),
-                    DeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
+                    DeleteBulkAction::make()->authorizeIndividualRecords(),
+                    RestoreBulkAction::make()->authorizeIndividualRecords(),
+                    ForceDeleteBulkAction::make()->authorizeIndividualRecords(),
                 ]),
             ])
             ->defaultSort('recorded_at', 'desc');

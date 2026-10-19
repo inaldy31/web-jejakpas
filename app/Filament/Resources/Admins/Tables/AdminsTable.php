@@ -21,6 +21,7 @@ class AdminsTable
             ->columns([
                 TextColumn::make('name')->label(__('jejak.admins.fields.name'))->searchable()->sortable(),
                 TextColumn::make('username')->label(__('jejak.auth.username'))->searchable()->sortable(),
+                TextColumn::make('upt.name')->label(__('jejak.admins.fields.upt'))->placeholder(__('jejak.admins.fields.upt_central')),
                 TextColumn::make('status')->label(__('jejak.admins.columns.status'))->badge()
                     ->state(fn (User $record): string => $record->isActive() ? __('jejak.admins.status.active') : __('jejak.admins.status.deactivated'))
                     ->color(fn (User $record): string => $record->isActive() ? 'success' : 'gray'),

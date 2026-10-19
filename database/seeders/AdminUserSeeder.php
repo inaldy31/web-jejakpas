@@ -42,7 +42,7 @@ class AdminUserSeeder extends Seeder
 
             if (! User::where('is_primary_admin', true)->whereNull('deactivated_at')->whereKeyNot($admin->getKey())->exists()) {
                 User::where('is_primary_admin', true)->whereKeyNot($admin->getKey())->update(['is_primary_admin' => false]);
-                $admin->forceFill(['is_primary_admin' => true])->save();
+                $admin->forceFill(['is_primary_admin' => true, 'upt_id' => null])->save();
             }
         });
 

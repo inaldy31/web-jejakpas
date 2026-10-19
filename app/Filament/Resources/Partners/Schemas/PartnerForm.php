@@ -8,7 +8,9 @@ use App\Enums\PksStatus;
 use App\Enums\SupportType;
 use App\Enums\SustainabilityStatus;
 use App\Models\Partner;
+use App\Models\Upt;
 use App\Support\FormLimits;
+use App\Support\UptAccess;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -43,7 +45,10 @@ class PartnerForm
                 CheckboxList::make('competency_fields')->label(__('jejak.partners.competency_fields'))->options(CompetencyField::options())->columns(3)->required(),
                 CheckboxList::make('support_types')->label(__('jejak.partners.support_types'))->options(SupportType::options())->columns(4)->required(),
                 Select::make('upts')->label(__('jejak.partners.upts'))->relationship('upts', 'name')->multiple()->preload()->searchable()
-                    ->saveRelationshipsUsing(fn (Select $component, ?Partner $record) => $record?->syncUpts((array) $component->getState())),
+                    ->default(fn (): array => array_filter([UptAccess::userUptId()]))
+                    ->disableOptionWhen(fn ($value): bool => UptAccess::userUptId() !== null && (int) $value !== UptAccess::userUptId())
+                    ->in(fn (): array => Upt::pluck('id')->all())
+                    ->saveRelationshipsUsing(fn (Select $component, ?Partner $record) => $record?->syncUpts(UptAccess::partnerUptsAfterSave($record, (array) $component->getState()))),
             ]),
 
             Section::make(__('jejak.partners.sections.outcomes'))->columns(3)->schema([

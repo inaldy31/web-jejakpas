@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PksDocuments\Tables;
 use App\Filament\Actions\PublicationActions;
 use App\Filament\Resources\PksDocuments\PksDocumentResource;
 use App\Models\PksDocument;
+use App\Support\UptAccess;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -14,6 +15,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class PksDocumentsTable
 {
@@ -31,7 +33,8 @@ class PksDocumentsTable
                 TextColumn::make('status')->label(__('jejak.pks_documents.columns.status'))->badge(),
             ])
             ->filters([
-                SelectFilter::make('partner')->label(__('jejak.pks_documents.filters.partner'))->relationship('partner', 'name'),
+                SelectFilter::make('partner')->label(__('jejak.pks_documents.filters.partner'))
+                    ->relationship('partner', 'name', fn (Builder $query): Builder => UptAccess::restrict($query)),
                 TrashedFilter::make(),
             ])
             ->recordActions([
@@ -42,9 +45,9 @@ class PksDocumentsTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     PublicationActions::bulkPublish(),
-                    DeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
+                    DeleteBulkAction::make()->authorizeIndividualRecords(),
+                    RestoreBulkAction::make()->authorizeIndividualRecords(),
+                    ForceDeleteBulkAction::make()->authorizeIndividualRecords(),
                 ]),
             ])
             ->defaultSort('valid_until', 'desc');

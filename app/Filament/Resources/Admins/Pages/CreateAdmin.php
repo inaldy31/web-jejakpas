@@ -31,6 +31,7 @@ class CreateAdmin extends CreateRecord
             'password' => $this->temporaryPassword,
             'role' => UserRole::Admin,
             'must_change_password' => true,
+            'upt_id' => $data['upt_id'] ?? null,
         ])->save();
 
         $creator = Auth::user();

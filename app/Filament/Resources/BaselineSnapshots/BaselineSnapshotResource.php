@@ -8,6 +8,7 @@ use App\Filament\Resources\BaselineSnapshots\Pages\ListBaselineSnapshots;
 use App\Filament\Resources\BaselineSnapshots\Schemas\BaselineSnapshotForm;
 use App\Filament\Resources\BaselineSnapshots\Tables\BaselineSnapshotsTable;
 use App\Models\BaselineSnapshot;
+use App\Support\UptAccess;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -55,6 +56,11 @@ class BaselineSnapshotResource extends Resource
             'create' => CreateBaselineSnapshot::route('/create'),
             'edit' => EditBaselineSnapshot::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return UptAccess::restrict(parent::getEloquentQuery());
     }
 
     public static function getRecordRouteBindingEloquentQuery(): Builder

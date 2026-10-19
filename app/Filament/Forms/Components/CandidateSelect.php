@@ -4,6 +4,7 @@ namespace App\Filament\Forms\Components;
 
 use App\Filament\Forms\Components\Concerns\GuardsArchivedOptions;
 use App\Models\PeerCandidate;
+use App\Support\UptAccess;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,7 +27,7 @@ class CandidateSelect
 
     private static function scope(Get $get): Builder
     {
-        return PeerCandidate::query()->with('upt')->orderBy('code');
+        return UptAccess::restrict(PeerCandidate::query()->with('upt')->orderBy('code'));
     }
 
     private static function label(PeerCandidate $candidate): string

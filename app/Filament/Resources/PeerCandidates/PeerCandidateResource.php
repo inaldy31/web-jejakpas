@@ -9,6 +9,7 @@ use App\Filament\Resources\PeerCandidates\RelationManagers\AssessmentsRelationMa
 use App\Filament\Resources\PeerCandidates\Schemas\PeerCandidateForm;
 use App\Filament\Resources\PeerCandidates\Tables\PeerCandidatesTable;
 use App\Models\PeerCandidate;
+use App\Support\UptAccess;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -63,6 +64,11 @@ class PeerCandidateResource extends Resource
             'create' => CreatePeerCandidate::route('/create'),
             'edit' => EditPeerCandidate::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return UptAccess::restrict(parent::getEloquentQuery());
     }
 
     public static function getRecordRouteBindingEloquentQuery(): Builder

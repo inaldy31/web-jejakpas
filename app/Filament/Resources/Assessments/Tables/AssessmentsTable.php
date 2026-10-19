@@ -38,9 +38,9 @@ class AssessmentsTable
             ->recordActions([EditAction::make()])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
+                    DeleteBulkAction::make()->authorizeIndividualRecords(),
+                    RestoreBulkAction::make()->authorizeIndividualRecords(),
+                    ForceDeleteBulkAction::make()->authorizeIndividualRecords(),
                 ]),
             ])
             ->defaultSort('assessed_at', 'desc');

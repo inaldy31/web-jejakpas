@@ -6,6 +6,7 @@ use App\Enums\CandidateStatus;
 use App\Enums\CompetencyField;
 use App\Filament\Forms\Components\ProgramSelect;
 use App\Support\FormLimits;
+use App\Support\UptAccess;
 use Closure;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -22,6 +23,7 @@ class PeerCandidateForm
             TextInput::make('code')->label(__('jejak.candidates.code'))->disabled()->dehydrated(false)
                 ->placeholder(__('jejak.candidates.code_placeholder')),
             Select::make('upt_id')->label(__('jejak.candidates.upt'))->relationship('upt', 'name')->preload()->required()
+                ->default(fn () => UptAccess::userUptId())->disabled(fn () => UptAccess::userUptId() !== null)->dehydrated()
                 ->helperText(fn (string $operation): ?string => $operation === 'edit' ? __('jejak.candidates.upt_helper') : null)
                 ->live(),
             TextInput::make('label')->label(__('jejak.candidates.label'))->required()->maxLength(50)

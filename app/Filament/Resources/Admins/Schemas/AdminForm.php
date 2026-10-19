@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources\Admins\Schemas;
 
+use App\Models\Upt;
+use App\Models\User;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
@@ -27,6 +30,12 @@ class AdminForm
                     ->validationMessages(['regex' => __('jejak.admins.fields.username_format')])
                     ->unique(ignoreRecord: true)
                     ->disabledOn('edit'),
+                Select::make('upt_id')
+                    ->label(__('jejak.admins.fields.upt'))
+                    ->options(fn (): array => Upt::orderBy('name')->pluck('name', 'id')->all())
+                    ->placeholder(__('jejak.admins.fields.upt_central'))
+                    ->helperText(__('jejak.admins.fields.upt_help'))
+                    ->hidden(fn (?User $record): bool => (bool) $record?->is_primary_admin),
             ]);
     }
 }

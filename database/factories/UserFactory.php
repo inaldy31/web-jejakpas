@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Upt;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -34,6 +35,11 @@ class UserFactory extends Factory
     public function primaryAdmin(): static
     {
         return $this->state(fn (array $attributes) => ['is_primary_admin' => true]);
+    }
+
+    public function forUpt(Upt $upt): static
+    {
+        return $this->state(fn (array $attributes) => ['upt_id' => $upt->getKey()]);
     }
 
     public function withoutTwoFactor(): static

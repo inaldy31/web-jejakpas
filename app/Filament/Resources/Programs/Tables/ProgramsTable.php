@@ -6,6 +6,7 @@ use App\Enums\CompetencyField;
 use App\Enums\PublicationStatus;
 use App\Filament\Actions\PublicationActions;
 use App\Models\Program;
+use App\Support\UptAccess;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -15,6 +16,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProgramsTable
 {
@@ -36,9 +38,10 @@ class ProgramsTable
             ->filters([
                 SelectFilter::make('upt')->label(__('jejak.programs.filters.upt'))->relationship('upt', 'name'),
                 SelectFilter::make('year')->label(__('jejak.programs.filters.year'))
-                    ->options(fn (): array => Program::query()->distinct()->orderByDesc('year')->pluck('year', 'year')->all()),
+                    ->options(fn (): array => UptAccess::restrict(Program::query())->distinct()->orderByDesc('year')->pluck('year', 'year')->all()),
                 SelectFilter::make('competency_field')->label(__('jejak.programs.filters.competency_field'))->options(CompetencyField::class),
-                SelectFilter::make('partner')->label(__('jejak.programs.filters.partner'))->relationship('partner', 'name'),
+                SelectFilter::make('partner')->label(__('jejak.programs.filters.partner'))
+                    ->relationship('partner', 'name', fn (Builder $query): Builder => UptAccess::restrict($query)),
                 SelectFilter::make('status')->label(__('jejak.programs.filters.status'))->options(PublicationStatus::class),
                 TrashedFilter::make(),
             ])
@@ -46,9 +49,9 @@ class ProgramsTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     PublicationActions::bulkPublish(),
-                    DeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
+                    DeleteBulkAction::make()->authorizeIndividualRecords(),
+                    RestoreBulkAction::make()->authorizeIndividualRecords(),
+                    ForceDeleteBulkAction::make()->authorizeIndividualRecords(),
                 ]),
             ])
             ->defaultSort('year', 'desc');

@@ -8,6 +8,7 @@ use App\Filament\Resources\Programs\Pages\ListPrograms;
 use App\Filament\Resources\Programs\Schemas\ProgramForm;
 use App\Filament\Resources\Programs\Tables\ProgramsTable;
 use App\Models\Program;
+use App\Support\UptAccess;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -57,6 +58,11 @@ class ProgramResource extends Resource
             'create' => CreateProgram::route('/create'),
             'edit' => EditProgram::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return UptAccess::restrict(parent::getEloquentQuery());
     }
 
     public static function getRecordRouteBindingEloquentQuery(): Builder

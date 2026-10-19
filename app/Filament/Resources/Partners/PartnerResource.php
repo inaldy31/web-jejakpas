@@ -8,6 +8,7 @@ use App\Filament\Resources\Partners\Pages\ListPartners;
 use App\Filament\Resources\Partners\Schemas\PartnerForm;
 use App\Filament\Resources\Partners\Tables\PartnersTable;
 use App\Models\Partner;
+use App\Support\UptAccess;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -57,6 +58,11 @@ class PartnerResource extends Resource
             'create' => CreatePartner::route('/create'),
             'edit' => EditPartner::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return UptAccess::restrict(parent::getEloquentQuery());
     }
 
     public static function getRecordRouteBindingEloquentQuery(): Builder

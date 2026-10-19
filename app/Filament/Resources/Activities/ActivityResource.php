@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Activities;
 
 use App\Filament\Resources\Activities\Pages\ListActivities;
 use App\Models\Activity;
+use App\Support\UptAccess;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
@@ -74,6 +75,11 @@ class ActivityResource extends Resource
                 SelectFilter::make('event')->label(__('jejak.activities.filters.event'))->options(static::eventLabels()),
             ])
             ->defaultSort('created_at', 'desc');
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return UptAccess::restrict(parent::getEloquentQuery());
     }
 
     public static function getPages(): array

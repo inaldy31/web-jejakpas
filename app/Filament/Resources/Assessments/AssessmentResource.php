@@ -8,6 +8,7 @@ use App\Filament\Resources\Assessments\Pages\ListAssessments;
 use App\Filament\Resources\Assessments\Schemas\AssessmentForm;
 use App\Filament\Resources\Assessments\Tables\AssessmentsTable;
 use App\Models\Assessment;
+use App\Support\UptAccess;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -55,6 +56,11 @@ class AssessmentResource extends Resource
             'create' => CreateAssessment::route('/create'),
             'edit' => EditAssessment::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return UptAccess::restrict(parent::getEloquentQuery());
     }
 
     public static function getRecordRouteBindingEloquentQuery(): Builder

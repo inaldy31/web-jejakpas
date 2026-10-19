@@ -67,7 +67,7 @@ final class PartnerExcelImporter
 
     private ?array $uptIdsByNormalizedName = null;
 
-    public function import(string $path): ImportResult
+    public function import(string $path, ?int $scopeUptId = null): ImportResult
     {
         $reader = IOFactory::createReader(IOFactory::READER_XLSX);
 
@@ -164,7 +164,7 @@ final class PartnerExcelImporter
 
         foreach ($withCode + $withoutCode as $rowNumber => $values) {
             try {
-                DB::transaction(fn () => $this->save($values, $result, $existingPartnersByCode));
+                DB::transaction(fn () => $this->save($values, $result, $existingPartnersByCode, $scopeUptId));
             } catch (ImportException $e) {
                 $result->errors[$rowNumber] = $e->getMessage();
             }
@@ -213,7 +213,7 @@ final class PartnerExcelImporter
         return $this->normalizeName(str_replace('●', '', $label));
     }
 
-    private function save(array $values, ImportResult $result, Collection $existingPartnersByCode): void
+    private function save(array $values, ImportResult $result, Collection $existingPartnersByCode, ?int $scopeUptId): void
     {
         $code = $this->code($values['code'] ?? null);
 
@@ -246,10 +246,15 @@ final class PartnerExcelImporter
             $attributes[$field] = $this->integer($values[$field] ?? null, $field);
         }
 
-        $uptIds = $this->uptIds($values['upts'] ?? null);
+        $uptIds = $scopeUptId === null ? $this->uptIds($values['upts'] ?? null) : [];
         $partner = $code !== null ? $existingPartnersByCode->get($code) : null;
+        $wasCreated = false;
 
         if ($partner !== null) {
+            if ($scopeUptId !== null && ! $partner->upts()->whereKey($scopeUptId)->exists()) {
+                throw new ImportException(__('jejak.partners.import.partner_of_other_upt', ['code' => $code]));
+            }
+
             if ($partner->trashed()) {
                 throw new ImportException(__('jejak.partners.import.soft_deleted', ['code' => $code]));
             }
@@ -272,9 +277,14 @@ final class PartnerExcelImporter
         } else {
             $partner = Partner::create([...$attributes, 'code' => $code]);
             $result->created++;
+            $wasCreated = true;
         }
 
-        if ($uptIds !== []) {
+        if ($scopeUptId !== null) {
+            if ($wasCreated) {
+                $partner->syncUpts([$scopeUptId]);
+            }
+        } elseif ($uptIds !== []) {
             $partner->syncUpts($uptIds);
         }
     }

@@ -178,6 +178,9 @@ return [
             'name' => 'Nama',
             'username_help' => 'Huruf kecil, angka, titik, garis bawah, atau tanda hubung. Tidak bisa diubah sesudah disimpan.',
             'username_format' => 'Nama pengguna hanya boleh berisi huruf kecil, angka, titik (.), garis bawah (_), atau tanda hubung (-).',
+            'upt' => 'UPT',
+            'upt_central' => 'Admin pusat (semua UPT)',
+            'upt_help' => 'Admin UPT hanya melihat dan mengelola data UPT-nya. Kosongkan untuk Admin pusat.',
         ],
         'columns' => [
             'status' => 'Status',
@@ -227,6 +230,7 @@ return [
             'via' => 'perintah server',
             'not_found' => 'Admin dengan nama pengguna ":username" tidak ditemukan.',
             'deactivated' => 'Akun ":username" nonaktif. Aktifkan dulu lewat Kelola Admin sebelum ditunjuk sebagai Admin Utama.',
+            'has_upt' => 'Admin ":username" adalah Admin UPT. Kosongkan UPT-nya dulu di Kelola Admin.',
             'two_factor_reset' => '2FA milik ":username" sudah direset. Admin ini wajib memasang 2FA lagi saat masuk berikutnya.',
             'primary_assigned' => '":username" sekarang Admin Utama. Admin Utama sebelumnya menjadi Admin biasa.',
             'primary_assigned_without_previous' => '":username" sekarang Admin Utama. Sebelumnya belum ada Admin Utama.',
@@ -338,6 +342,7 @@ return [
         ],
         'import' => [
             'action_label' => 'Impor Excel',
+            'partner_of_other_upt' => 'Baris dilewati: Mitra :code terdaftar di UPT lain. Hubungi Admin pusat untuk mengubahnya.',
             'file_label' => 'File .xlsx dengan sheet "Data Mitra"',
             'failed_title' => 'Impor gagal',
             'completed_title' => 'Impor selesai, data baru berstatus Draft',

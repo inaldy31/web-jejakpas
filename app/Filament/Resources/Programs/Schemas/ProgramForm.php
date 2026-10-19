@@ -6,6 +6,7 @@ use App\Enums\CompetencyField;
 use App\Filament\Forms\Components\PartnerSelect;
 use App\Models\Partner;
 use App\Support\FormLimits;
+use App\Support\UptAccess;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -16,7 +17,8 @@ class ProgramForm
     public static function configure(Schema $schema): Schema
     {
         return $schema->columns(2)->components([
-            Select::make('upt_id')->label(__('jejak.programs.upt'))->relationship('upt', 'name')->preload()->required(),
+            Select::make('upt_id')->label(__('jejak.programs.upt'))->relationship('upt', 'name')->preload()->required()
+                ->default(fn () => UptAccess::userUptId())->disabled(fn () => UptAccess::userUptId() !== null)->dehydrated(),
             TextInput::make('year')->label(__('jejak.programs.year'))->integer()->minValue(2000)->maxValue(2100)->required(),
             TextInput::make('name')->label(__('jejak.programs.name'))->required()->maxLength(255),
             Select::make('competency_field')->label(__('jejak.programs.competency_field'))->options(CompetencyField::class)->required(),

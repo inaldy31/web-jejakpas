@@ -31,6 +31,12 @@ class AssignPrimaryAdmin extends Command
             return self::FAILURE;
         }
 
+        if ($user->upt_id !== null) {
+            $this->error(__('jejak.admins.console.has_upt', ['username' => $user->username]));
+
+            return self::FAILURE;
+        }
+
         if ($user->is_primary_admin && ! User::where('is_primary_admin', true)->whereKeyNot($user->getKey())->exists()) {
             $this->info(__('jejak.admins.console.primary_unchanged', ['username' => $user->username]));
 

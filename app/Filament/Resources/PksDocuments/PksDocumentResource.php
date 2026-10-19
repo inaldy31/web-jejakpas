@@ -8,6 +8,7 @@ use App\Filament\Resources\PksDocuments\Pages\ListPksDocuments;
 use App\Filament\Resources\PksDocuments\Schemas\PksDocumentForm;
 use App\Filament\Resources\PksDocuments\Tables\PksDocumentsTable;
 use App\Models\PksDocument;
+use App\Support\UptAccess;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Resources\Resource;
@@ -58,6 +59,11 @@ class PksDocumentResource extends Resource
             'create' => CreatePksDocument::route('/create'),
             'edit' => EditPksDocument::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return UptAccess::restrict(parent::getEloquentQuery());
     }
 
     public static function getRecordRouteBindingEloquentQuery(): Builder

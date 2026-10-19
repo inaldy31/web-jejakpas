@@ -13,8 +13,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AdminUserSeeder::class,
-            UptAdminSeeder::class,
             UptSeeder::class,
+            UptAdminSeeder::class,
             PartnerSeeder::class,
             ProgramSeeder::class,
             BaselineSnapshotSeeder::class,
