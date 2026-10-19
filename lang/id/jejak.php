@@ -238,6 +238,8 @@ return [
 
     'account' => [
         'password_same' => 'Kata sandi baru tidak boleh sama dengan kata sandi sekarang.',
+        'password_reminder' => 'Kata sandi akun ini masih sama dengan kata sandi Admin Utama. Sebaiknya ganti lewat menu Profil.',
+        'password_reminder_link' => 'Ganti kata sandi',
         'remember_device' => 'Ingat perangkat ini selama :days hari',
         'change_password' => [
             'heading' => 'Ganti kata sandi',

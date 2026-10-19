@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use App\Support\TrustedDevices;
 use Closure;
 use DateTime;
@@ -13,8 +14,10 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
@@ -53,6 +56,14 @@ class AppServiceProvider extends ServiceProvider
             activity('auth')->causedBy($event->user)->event('login')
                 ->withProperties(TrustedDevices::wasUsed(request()) ? ['trusted_device' => true] : [])
                 ->log('login');
+
+            $password = config('jejak.admin.password');
+            $user = $event->user;
+
+            session()->put('jejak.password_reminder', filled($password)
+                && $user instanceof User
+                && $user->username !== Str::lower(trim((string) config('jejak.admin.username')))
+                && Hash::check($password, $user->getAuthPassword()));
         });
 
         Event::listen(Logout::class, function (Logout $event): void {

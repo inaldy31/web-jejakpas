@@ -18,6 +18,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -102,6 +103,7 @@ class AdminPanelProvider extends PanelProvider
             ->authenticatedRoutes(function (): void {
                 Route::get('/ganti-password', ChangePassword::class)->name('auth.password-change');
             })
-            ->livewireComponents([ChangePassword::class]);
+            ->livewireComponents([ChangePassword::class])
+            ->renderHook(PanelsRenderHook::PAGE_START, fn (): string => session('jejak.password_reminder') ? view('filament.admin.password-reminder')->render() : '');
     }
 }

@@ -60,6 +60,7 @@ class EditProfile extends BaseEditProfile
     protected function afterSave(): void
     {
         if ($this->passwordChanged) {
+            session()->forget('jejak.password_reminder');
             AccountPasswords::logChanged($this->getUser());
         }
     }
